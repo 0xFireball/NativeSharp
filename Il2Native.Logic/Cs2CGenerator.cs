@@ -58,13 +58,13 @@ namespace Il2Native.Logic
                 DebugOutput = false;
             }
 
-            if (this.FirstSource.EndsWith(".csproj"))
+            if (this.FirstSource.EndsWith(".csproj", StringComparison.InvariantCulture))
             {
                 this.LoadProject(this.FirstSource);
             }
             else
             {
-                var coreLibPathArg = args != null ? args.FirstOrDefault(a => a.StartsWith("corelib:")) : null;
+                var coreLibPathArg = args != null ? args.FirstOrDefault(a => a.StartsWith("corelib:", StringComparison.InvariantCulture)) : null;
                 this.CoreLibPath = coreLibPathArg != null ? coreLibPathArg.Substring("corelib:".Length) : null;
                 this.DefaultDllLocations = Path.GetDirectoryName(Path.GetFullPath(this.FirstSource));
             }
@@ -642,12 +642,14 @@ namespace Il2Native.Logic
                     return this.CoreLibPath;
                 }
 
-                Debug.Assert(false, "you are using mscorlib from .NET");
+                //Debug.Assert(false, "you are using mscorlib from .NET");
+                Console.WriteLine("[WARNING] You are using mscorlib from .NET");
 
                 return typeof(int).Assembly.Location;
             }
 
-            Debug.Fail("Not implemented yet");
+            //Debug.Fail("Not implemented yet");
+            Console.WriteLine($"[FAILURE] Not implemented yet: {assemblyIdentity.Name}");
 
             return null;
         }
