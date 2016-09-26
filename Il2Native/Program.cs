@@ -20,7 +20,8 @@ namespace Il2Native
         {
             if (args.Length == 0)
             {
-                Console.WriteLine("C# Native, https://csnative.codeplex.com/");
+                Console.WriteLine("NativeSharp, https://github.com/0xFireball/NativeSharp");
+                Console.WriteLine("Based on Cs2Cpp, https://github.com/ASDAlexander77/cs2cpp.git");
                 Console.WriteLine("C# to C++ transpiler");
                 Console.WriteLine(string.Empty);
                 Console.WriteLine("Usage: CS2CPP [options] file");
