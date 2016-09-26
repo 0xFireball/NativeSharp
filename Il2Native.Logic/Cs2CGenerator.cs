@@ -60,14 +60,15 @@ namespace Il2Native.Logic
 
             Console.WriteLine($"Main source file: {FirstSource}");
 
+            var coreLibPathArg = args != null ? args.FirstOrDefault(a => a.StartsWith("corelib:", StringComparison.InvariantCulture)) : null;
+            this.CoreLibPath = coreLibPathArg != null ? coreLibPathArg.Substring("corelib:".Length) : null;
+
             if (this.FirstSource.EndsWith(".csproj", StringComparison.InvariantCulture))
             {
                 this.LoadProject(this.FirstSource);
             }
             else
             {
-                var coreLibPathArg = args != null ? args.FirstOrDefault(a => a.StartsWith("corelib:", StringComparison.InvariantCulture)) : null;
-                this.CoreLibPath = coreLibPathArg != null ? coreLibPathArg.Substring("corelib:".Length) : null;
                 this.DefaultDllLocations = Path.GetDirectoryName(Path.GetFullPath(this.FirstSource));
                 Console.WriteLine($"CoreLib path: {CoreLibPath}");
             }
@@ -228,6 +229,7 @@ namespace Il2Native.Logic
 
         private AssemblyMetadata CompileWithRoslynInMemory(string[] source)
         {
+            Console.WriteLine($"RoslynCompile> Compiling sources with Roslyn: {string.Join(" ", source)}\n");
             var srcFileName = Path.GetFileNameWithoutExtension(this.FirstSource);
             var assemblyName = srcFileName;
 
@@ -245,6 +247,7 @@ namespace Il2Native.Logic
             var assemblies = new List<MetadataImageReference>();
 
             this.Assemblies = this.LoadReferencesForCompiling(assemblies);
+            Console.WriteLine($"    > References: {string.Join(" ", assemblies.Select(asm=>asm.Display))}");
 
             var options =
                 new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary).WithAllowUnsafe(true)
@@ -341,18 +344,18 @@ namespace Il2Native.Logic
             return filePath;
         }
 
-        private IEnumerable<string> GetReferencesFromProject(string prjectFullFilePath, XNamespace ns, XElement xElement)
+        private IEnumerable<string> GetReferencesFromProject(string projectFullFilePath, XNamespace ns, XElement xElement)
         {
             foreach (var projectReference in xElement.Elements(ns + "ItemGroup").Elements(ns + "ProjectReference"))
             {
-                var projectFile = this.GetRealFolderFromProject(prjectFullFilePath, projectReference);
+                var projectFile = this.GetRealFolderFromProject(projectFullFilePath, projectReference);
                 var project = XDocument.Load(projectFile);
                 foreach (var reference in this.LoadReferencesFromProject(projectFile, project, ns))
                 {
                     yield return reference;
                 }
 
-                yield return this.GetReferenceFromProjectValue(projectReference, prjectFullFilePath);
+                yield return this.GetReferenceFromProjectValue(projectReference, projectFullFilePath);
             }
         }
 
@@ -442,11 +445,13 @@ namespace Il2Native.Logic
                     .Select(element => Path.Combine(folder, element.Attribute("Include").Value))
                     .ToArray();
 
-            Console.WriteLine("Loaded sources from csproj:");
+            Console.WriteLine("Loaded sources from csproj.");
+            /*
             foreach (var sourceFile in Sources)
             {
                 Console.WriteLine($"     {sourceFile}");
             }
+            */
 
             this.Impl =
                 project.Root.Elements(ns + "ItemGroup").Elements(ns + "Content")
@@ -475,6 +480,12 @@ namespace Il2Native.Logic
             }
 
             this.ReferencesList = this.LoadReferencesFromProject(firstSource, project, ns);
+
+            //Inject CoreLib reference
+            var refList = ReferencesList.ToList();
+            refList.Add(CoreLibPath);
+            ReferencesList = refList.ToArray();
+            
             DebugOutput = this.Options["Configuration"] != "Release";
         }
 
