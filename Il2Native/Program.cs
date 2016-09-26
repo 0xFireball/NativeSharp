@@ -45,8 +45,8 @@ namespace Il2Native
             }
 
             var processedArgs =
-                args.Select(arg => (arg.StartsWith("/") || arg.StartsWith("-")) ? arg.Substring(1) : arg).ToArray();
-            var sources = args.Where(arg => (!arg.StartsWith("/") && !arg.StartsWith("-"))).ToArray();
+                args.Select(arg => (arg.StartsWith("/", StringComparison.InvariantCulture) || arg.StartsWith("-", StringComparison.InvariantCulture)) ? arg.Substring(1) : arg).ToArray();
+            var sources = args.Where(arg => (!arg.StartsWith("/", StringComparison.InvariantCulture) && !arg.StartsWith("-", StringComparison.InvariantCulture))).ToArray();
 
             var fileExtension = Path.GetExtension(sources.First());
             if (!sources.All(f => Path.GetExtension(f).Equals(fileExtension, StringComparison.InvariantCultureIgnoreCase)))
