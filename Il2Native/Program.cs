@@ -64,7 +64,7 @@ namespace Il2Native
                 return 1;
             }
 
-            Console.Write("Generating CPP files...");
+            Console.WriteLine("Building target \"Generate C++ files\"...");
             Il2Converter.Convert(sources, Environment.CurrentDirectory, processedArgs);
             Console.WriteLine("Done.");
 

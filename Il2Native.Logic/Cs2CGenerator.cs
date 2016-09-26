@@ -58,6 +58,8 @@ namespace Il2Native.Logic
                 DebugOutput = false;
             }
 
+            Console.WriteLine($"Main source file: {FirstSource}");
+
             if (this.FirstSource.EndsWith(".csproj", StringComparison.InvariantCulture))
             {
                 this.LoadProject(this.FirstSource);
@@ -67,6 +69,7 @@ namespace Il2Native.Logic
                 var coreLibPathArg = args != null ? args.FirstOrDefault(a => a.StartsWith("corelib:", StringComparison.InvariantCulture)) : null;
                 this.CoreLibPath = coreLibPathArg != null ? coreLibPathArg.Substring("corelib:".Length) : null;
                 this.DefaultDllLocations = Path.GetDirectoryName(Path.GetFullPath(this.FirstSource));
+                Console.WriteLine($"CoreLib path: {CoreLibPath}");
             }
         }
 
@@ -439,10 +442,16 @@ namespace Il2Native.Logic
                     .Select(element => Path.Combine(folder, element.Attribute("Include").Value))
                     .ToArray();
 
+            Console.WriteLine("Loaded sources from csproj:");
+            foreach (var sourceFile in Sources)
+            {
+                Console.WriteLine($"     {sourceFile}");
+            }
+
             this.Impl =
                 project.Root.Elements(ns + "ItemGroup").Elements(ns + "Content")
                     .Select(element => Path.Combine(folder, element.Attribute("Include").Value))
-                    .Where(s => s.EndsWith(".cpp") || s.EndsWith(".h"))
+                    .Where(s => s.EndsWith(".cpp", StringComparison.InvariantCulture) || s.EndsWith(".h", StringComparison.InvariantCulture))
                     .ToArray();
 
             var options = this.Options;
