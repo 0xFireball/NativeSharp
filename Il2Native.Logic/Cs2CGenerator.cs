@@ -1,8 +1,14 @@
 ﻿// Mr Oleksandr Duzhar licenses this file to you under the MIT license.
 // If you need the License file, please send an email to duzhar@googlemail.com
-// 
+//
 namespace Il2Native.Logic
 {
+    using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.CSharp.Emit;
+    using Microsoft.CodeAnalysis.CSharp.Symbols;
+    using Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE;
+    using Microsoft.CodeAnalysis.Text;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
@@ -12,12 +18,6 @@ namespace Il2Native.Logic
     using System.Linq;
     using System.Text;
     using System.Xml.Linq;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.CSharp.Emit;
-    using Microsoft.CodeAnalysis.CSharp.Symbols;
-    using Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE;
-    using Microsoft.CodeAnalysis.Text;
 
     /// <summary>
     /// </summary>
@@ -247,7 +247,7 @@ namespace Il2Native.Logic
             var assemblies = new List<MetadataImageReference>();
 
             this.Assemblies = this.LoadReferencesForCompiling(assemblies);
-            Console.WriteLine($"    > References: {string.Join(" ", assemblies.Select(asm=>asm.Display))}");
+            Console.WriteLine($"    > References: {string.Join(" ", assemblies.Select(asm => asm.Display))}");
 
             var options =
                 new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary).WithAllowUnsafe(true)
@@ -485,7 +485,7 @@ namespace Il2Native.Logic
             var refList = ReferencesList.ToList();
             refList.Add(CoreLibPath);
             ReferencesList = refList.ToArray();
-            
+
             DebugOutput = this.Options["Configuration"] != "Release";
         }
 
