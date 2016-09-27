@@ -1,37 +1,37 @@
 
-C# to C++ transpiler (NativeSharp, based on Cs2Cpp)
-===========================
+# NativeSharp
 
-Information
--------
-NativeSharp is heavily based on [Cs2Cpp](https://github.com/ASDAlexander77/cs2cpp)
+Open source C# to C++ transpiler (NativeSharp, based on Cs2Cpp)
+
+## Information
+
+NativeSharp is heavily based on [Cs2Cpp](https://github.com/ASDAlexander77/cs2cpp).
 
 
-License
--------
+
+# License
 
 Cs2Cpp is licensed under the MIT license.
 
-Quick Start
------------
+# Quick Start
 
 Prerequisite: CMake, .NET 4.6, GCC 5.0+ or Microsoft Visual C++ 2015 
 
-1) Build Project
+1. Build Project
 
 ```
 cd Il2Native
 MSBuild Il2Native.sln /p:Configuration=Debug /p:Platform="Any CPU"
 ```
 
-2) Build CoreLib (aka mscorlib)
+2. Build CoreLib (aka mscorlib)
 
 ```
 cd CoreLib
 MSBuild CoreLib.csproj /p:Configuration=Release /p:Platform="AnyCPU"
 ```
 
-3) Create a temporary folder to build projects/files
+3. Create a temporary folder to build projects/files
 
 ```
 cd ..\..
@@ -39,13 +39,13 @@ mkdir playground
 cd playground
 ```
 
-4) Generating CoreLib C++ project
+4. Generating CoreLib C++ project
 
 ```
 ..\Il2Native\Il2Native\bin\Debug\Cs2Cpp.exe ..\Il2Native\CoreLib\CoreLib.csproj
 ```
 
-5) Compile it
+5. Compile it
 
 ```
 cd CoreLib
@@ -82,4 +82,3 @@ build_vs2015_release.bat
 ```
 
 Now you have HelloWorld.exe
-
